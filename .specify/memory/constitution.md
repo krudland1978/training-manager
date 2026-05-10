@@ -1,50 +1,104 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+<!-- sync-impact-report
+Version Change: N/A → 1.0.0 (initial ratification)
+Modified Principles: None (first-time fill)
+Added Sections:
+  - Core Principles (I–IV): Code Quality, Testing Standards, UX Consistency, Performance Requirements
+  - Development Workflow
+  - Quality Gates
+  - Governance
+Removed Sections: None
+Templates Requiring Updates:
+  ✅ .specify/templates/plan-template.md — Constitution Check references principles dynamically; no structural change required
+  ✅ .specify/templates/spec-template.md — Success Criteria & Requirements align with performance/UX principles; no structural change required
+  ✅ .specify/templates/tasks-template.md — Testing-first discipline already enforced; no structural change required
+Deferred TODOs: None
+-->
+
+# Training Manager Constitution
 
 ## Core Principles
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+### I. Code Quality
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+Every line of code MUST be clean, readable, and maintainable. Functions MUST have a
+single responsibility. Modules MUST be cohesive and loosely coupled. Code duplication
+MUST be eliminated through well-named abstractions. Public interfaces MUST be
+self-documenting through clear naming — inline comments are reserved for non-obvious
+invariants and hidden constraints only. No dead code, commented-out blocks, or
+speculative abstractions MUST be merged.
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+**Rationale**: Readable code reduces onboarding time, lowers defect rates, and enables
+confident refactoring as requirements evolve.
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+### II. Testing Standards
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+Tests MUST be written before or alongside implementation — never after. Unit tests MUST
+cover all business logic. Integration tests MUST cover all critical user paths and
+service boundaries. The test suite MUST pass in CI before any merge to main. Coverage
+MUST NOT regress below 80% for core modules. Tests MUST be deterministic — flaky tests
+MUST be fixed or deleted immediately, never muted. Test data MUST be isolated per test
+and MUST NOT rely on shared mutable state.
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
+**Rationale**: A reliable test suite is the primary mechanism for safe, continuous
+delivery and confident change. Tests that pass by accident are worse than no tests.
 
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
+### III. User Experience Consistency
 
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
+All user-facing interfaces MUST follow established design patterns and the project's
+component and style system. Interaction flows MUST be predictable and consistent across
+the entire application — equivalent actions MUST behave equivalently in every context.
+Error messages MUST be actionable, plain-language, and human-readable. Loading, empty,
+and error states MUST be handled gracefully in every UI context. No feature MUST ship
+without having been tested on the golden path and primary edge cases in a real browser
+or device.
 
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+**Rationale**: Consistent UX reduces cognitive load, builds user trust, and lowers
+support burden. Inconsistency is a form of technical debt visible to every user.
+
+### IV. Performance Requirements
+
+API responses MUST complete within 200ms at p95 under normal load. UI interactions MUST
+render or acknowledge within 100ms to feel instantaneous. Background jobs MUST NOT
+degrade user-facing response times. Database queries MUST be indexed and MUST NOT
+produce full-table scans on large datasets. Performance regressions MUST be caught in CI
+via benchmarks or load tests before reaching production. Every feature plan MUST declare
+explicit performance goals and constraints before implementation begins.
+
+**Rationale**: Performance is a feature. Users abandon slow applications, and regressions
+compound silently if not gated at the boundary.
+
+## Development Workflow
+
+All changes MUST be made on feature branches and reviewed via pull request before merge
+to main. PRs MUST reference a spec or tracked issue. No direct commits to main are
+permitted. The Constitution Check in each plan MUST be completed and passing before
+implementation begins. Complexity violations — any deviation from these principles —
+MUST be explicitly justified in the plan's Complexity Tracking table with a specific
+reason and an explanation of why the simpler alternative was rejected.
+
+## Quality Gates
+
+Every PR MUST pass the following gates before merge:
+
+- All tests passing in CI (unit, integration, contract)
+- No new linting or type errors introduced
+- Test coverage for core modules at or above 80%
+- Performance benchmarks within declared thresholds (no regressions)
+- Peer review approval from at least one other contributor
+- Constitution Check completed and documented in plan.md
 
 ## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
+This constitution supersedes all other project practices and conventions. When any
+practice conflicts with these principles, the constitution wins. Amendments require a
+documented rationale, team discussion, and a version-bumped update to this file.
 
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+Amendment versioning policy:
+- **MAJOR**: Removal or backward-incompatible redefinition of an existing principle
+- **MINOR**: New principle or section added, or material expansion of existing guidance
+- **PATCH**: Clarification, wording improvement, or non-semantic refinement
+
+All pull requests and code reviews MUST verify compliance with the principles above.
+When in doubt, choose the simpler, more testable, more consistent approach.
+
+**Version**: 1.0.0 | **Ratified**: 2026-05-10 | **Last Amended**: 2026-05-10
