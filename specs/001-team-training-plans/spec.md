@@ -6,24 +6,24 @@
 
 ## User Scenarios & Testing *(mandatory)*
 
-### User Story 1 - Upload Team and Course Data (Priority: P1)
+### User Story 1 - Upload Team and Certification Data (Priority: P1)
 
 A team manager uploads a roster of team members (with their roles, seniority grades, and
-existing certifications) and a catalogue of available courses (with the certification level
-each course leads to). The system accepts this input and stores it ready for plan generation.
+existing certifications held) and a catalogue of available certifications. The system
+accepts this input and stores it ready for plan generation.
 
 **Why this priority**: Without team data and course catalogue, no training plans can be
 generated. This is the foundational data entry flow — everything else depends on it.
 
-**Independent Test**: Manager can upload a team list and course catalogue and receive
+**Independent Test**: Manager can upload a team list and certification catalogue and receive
 confirmation that the data has been accepted and displays a summary of team members and
-courses recognised.
+certifications recognised.
 
 **Acceptance Scenarios**:
 
-1. **Given** a manager has a team roster and a course catalogue, **When** they submit both,
+1. **Given** a manager has a team roster and a certification catalogue, **When** they submit both,
    **Then** the system confirms successful import and displays a summary of team members
-   and courses recognised.
+   and certifications recognised.
 2. **Given** a manager submits a team roster with missing required fields (e.g., no role
    assigned), **When** the system processes it, **Then** it reports which records are
    incomplete and does not generate plans for those individuals until corrected.
@@ -128,6 +128,10 @@ and export the full team plan list in a format that opens without specialist sof
   system applies the nearest lower requirement and flags the gap for the manager to review.
 - What happens if the course catalogue is empty when plans are generated? The system
   informs the manager that no courses are available and no plans can be produced.
+- What happens when a team member's remaining training days are insufficient to complete
+  their required certifications? The system displays a warning on their plan but still
+  generates and shows the full plan — the manager decides how to respond (e.g., increase
+  allocation or prioritise certifications).
 
 ## Requirements *(mandatory)*
 
@@ -135,8 +139,8 @@ and export the full team plan list in a format that opens without specialist sof
 
 - **FR-001**: The system MUST allow a manager to submit a list of team members including
   each person's name, role, seniority grade, and current certifications held.
-- **FR-002**: The system MUST allow a manager to submit a course catalogue listing
-  available courses and the certification level each course leads to.
+- **FR-002**: The system MUST allow a manager to submit a certification catalogue listing
+  available certifications and the certification level each one awards.
 - **FR-003**: The system MUST allow a manager to define a requirements matrix specifying
   the certification level required for each role and seniority grade combination.
 - **FR-004**: The system MUST generate an individualised training plan for each team
@@ -154,6 +158,9 @@ and export the full team plan list in a format that opens without specialist sof
   that does not require specialist software to open.
 - **FR-010**: The system MUST recalculate affected training plans when team member data,
   the course catalogue, or the requirements matrix is updated.
+- **FR-011**: The system MUST display a warning on a team member's training plan when
+  their remaining allocated training days are insufficient to complete all required
+  certifications, but MUST NOT prevent the plan from being generated or viewed.
 
 ### Key Entities
 
@@ -172,8 +179,9 @@ and export the full team plan list in a format that opens without specialist sof
 
 ### Measurable Outcomes
 
-- **SC-001**: A manager can go from submitting team and course data to having generated
-  training plans for all team members in under 10 minutes for a team of up to 50 people.
+- **SC-001**: A manager can go from submitting team and certification data to having
+  generated training plans for all team members in under 30 seconds for a team of up to
+  200 people.
 - **SC-002**: Generated training plans are accurate — 100% of plans contain only courses
   the team member does not already hold and that lead toward their required certification
   level.
@@ -183,6 +191,110 @@ and export the full team plan list in a format that opens without specialist sof
   opening the application.
 - **SC-005**: Exported plans can be opened and read without additional software by 100%
   of recipients.
+
+## Example Data
+
+### Team List
+
+The following CSV format is used to submit team member data:
+
+```csv
+person_id,name,email,grade_level,role_id,start_date,grade_start_date,manager_email,location,active,days_allocated_override,days_remaining,certifications_held
+P001,Alice Smith,alice.smith@company.com,7,solution_architect,15/03/2022,01/04/2024,big.manager@company.com,London,TRUE,10,10,aws-cp|aws-saa
+P002,Bob Johnson,bob.johnson@company.com,5,software_dev_engineer,10/01/2024,10/01/2024,big.manager@company.com,London,TRUE,10,10,aws-cp
+P003,Carol Williams,carol.williams@company.com,9,cloud_devops,01/09/2018,01/04/2023,big.manager@company.com,London,TRUE,10,10,aws-cp|aws-soa|aws-dop
+P004,David Brown,david.brown@company.com,3,cloud_engineer,15/09/2025,15/09/2025,big.manager@company.com,Manchester,TRUE,10,5,
+P005,Eve Davis,eve.davis@company.com,10,devsecops,01/06/2017,01/01/2024,big.manager@company.com,Edinburgh,TRUE,10,6,aws-cp|aws-soa|aws-dop
+P006,Frank Miller,frank.miller@company.com,8,application_architect,01/02/2020,01/04/2024,big.manager@company.com,Bristol,TRUE,10,4,aws-cp|aws-saa
+```
+
+**Field notes**:
+- `person_id` — unique identifier for each team member
+- `grade_level` — numeric seniority grade (higher = more senior)
+- `role_id` — machine-readable role identifier (e.g., `solution_architect`, `cloud_devops`)
+- `days_allocated_override` — total training days allocated to this person
+- `days_remaining` — training days not yet consumed
+- `active` — whether the person is currently on the team
+- `certifications_held` — pipe-separated list of `cert_id` values already held (empty = none)
+
+### Certification Catalogue
+
+The following CSV format defines available certifications, their study time, difficulty, and domain:
+
+```csv
+cert_id,exam_code,name,provider,level,domain,typical_study_days,difficulty_multiplier,validity_years,retired,superseded_by_cert_id
+aws-cp,CLF-C02,AWS Certified Cloud Practitioner,aws,foundational,General,3,1.0,3,false,
+aws-aip,AIF-C01,AWS Certified AI Practitioner,aws,foundational,AI/ML,4,1.0,3,false,
+aws-saa,SAA-C03,AWS Certified Solutions Architect - Associate,aws,associate,Architecture,8,1.5,3,false,
+aws-dva,DVA-C02,AWS Certified Developer - Associate,aws,associate,Development,8,1.5,3,false,
+aws-soa,SOA-C02,AWS Certified SysOps Administrator - Associate,aws,associate,Operations,9,1.5,3,false,
+aws-dea,DEA-C01,AWS Certified Data Engineer - Associate,aws,associate,Data,10,1.6,3,false,
+aws-mla,MLA-C01,AWS Certified Machine Learning Engineer - Associate,aws,associate,AI/ML,10,1.6,3,false,
+aws-sap,SAP-C02,AWS Certified Solutions Architect - Professional,aws,professional,Architecture,15,2.6,3,false,
+aws-dop,DOP-C02,AWS Certified DevOps Engineer - Professional,aws,professional,DevOps,15,2.5,3,false,
+aws-ans,ANS-C01,AWS Certified Advanced Networking - Specialty,aws,specialty,Networking,14,2.2,3,false,
+aws-scs,SCS-C02,AWS Certified Security - Specialty,aws,specialty,Security,12,2.0,3,false,
+aws-mls,MLS-C01,AWS Certified Machine Learning - Specialty,aws,specialty,AI/ML,14,2.1,3,false,
+aws-das,DAS-C01,AWS Certified Data Analytics - Specialty,aws,specialty,Data,13,2.0,3,true,
+aws-dbs,DBS-C01,AWS Certified Database - Specialty,aws,specialty,Data,13,2.0,3,true,
+aws-pas,PAS-C01,AWS Certified SAP on AWS - Specialty,aws,specialty,Workloads,12,2.0,3,true,
+```
+
+**Field notes**:
+- `cert_id` — unique identifier for the certification
+- `exam_code` — official vendor exam code
+- `level` — progression tier: `foundational` → `associate` → `professional` → `specialty`
+- `domain` — subject area (e.g., Architecture, Security, AI/ML, Data)
+- `typical_study_days` — baseline study days required; actual days = `typical_study_days × difficulty_multiplier`
+- `difficulty_multiplier` — scales study time for individual circumstances
+- `validity_years` — how long the certification remains valid before renewal is needed
+- `retired` — if `true`, the certification is no longer offered for new candidates
+- `superseded_by_cert_id` — if retired, the replacement certification (if any)
+
+**Certification level ordering** (lowest to highest):
+1. `foundational`
+2. `associate`
+3. `professional`
+4. `specialty`
+
+### Role and Grade Requirements Matrix
+
+The following defines the required certification(s) for each role and grade band. Higher
+grades require more advanced certifications within the role's domain track.
+
+```csv
+role_id,grade_min,grade_max,required_cert_ids,notes
+cloud_engineer,1,3,aws-cp,Foundational AWS literacy
+cloud_engineer,4,6,aws-soa,Operations associate
+cloud_engineer,7,8,aws-sap,Solutions architect professional
+cloud_engineer,9,99,aws-sap|aws-ans,Professional + Networking specialty
+software_dev_engineer,1,3,aws-cp,Foundational AWS literacy
+software_dev_engineer,4,6,aws-dva,Developer associate
+software_dev_engineer,7,8,aws-dop,DevOps professional
+software_dev_engineer,9,99,aws-dop|aws-mla,Professional + ML associate
+solution_architect,1,3,aws-cp,Foundational AWS literacy
+solution_architect,4,6,aws-saa,Solutions architect associate
+solution_architect,7,8,aws-sap,Solutions architect professional
+solution_architect,9,99,aws-sap|aws-scs,Professional + Security specialty
+application_architect,1,3,aws-cp,Foundational AWS literacy
+application_architect,4,6,aws-saa,Solutions architect associate
+application_architect,7,8,aws-sap,Solutions architect professional
+application_architect,9,99,aws-sap|aws-ans,Professional + Networking specialty
+cloud_devops,1,3,aws-cp,Foundational AWS literacy
+cloud_devops,4,6,aws-soa,SysOps associate
+cloud_devops,7,8,aws-dop,DevOps professional
+cloud_devops,9,99,aws-dop|aws-ans,Professional + Networking specialty
+devsecops,1,3,aws-cp,Foundational AWS literacy
+devsecops,4,6,aws-soa,SysOps associate (security foundation)
+devsecops,7,8,aws-dop,DevOps professional
+devsecops,9,99,aws-dop|aws-scs,Professional + Security specialty
+```
+
+**Field notes**:
+- `grade_min` / `grade_max` — inclusive grade band; use `99` as an open upper bound
+- `required_cert_ids` — pipe-separated list of certifications all of which must be held
+- Each certification's `typical_study_days × difficulty_multiplier` determines the
+  study time needed; this is compared against the team member's `days_remaining`
 
 ## Assumptions
 

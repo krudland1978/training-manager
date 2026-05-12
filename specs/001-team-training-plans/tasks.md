@@ -7,7 +7,8 @@ description: "Task list for Team Training Plan Manager"
 **Input**: Design documents from `specs/001-team-training-plans/`
 **Prerequisites**: plan.md ✅, spec.md ✅, data-model.md ✅, contracts/api.md ✅, research.md ✅
 
-**Tests**: Not included (not requested in specification).
+**Tests**: Included. Required by constitution §II (Testing Standards) — 80% coverage floor,
+tests written alongside implementation, CI gate before merge.
 
 **Organization**: Tasks are grouped by user story to enable independent implementation
 and testing of each story.
@@ -126,7 +127,7 @@ plan targets aws-dop + aws-scs.
 
 ### Implementation for User Story 3
 
-- [ ] T035 Implement plan generation service (gap analysis algorithm): load members, certs, rules; compute outstanding certs per member; calculate study days; set days_warning; order by level_order in `backend/lib/services/plan_generator.py` per research.md decision 4
+- [ ] T035 Implement plan generation service (gap analysis algorithm): load members, certs, rules; compute outstanding certs per member; calculate study days; set days_warning; order by level_order; detect and collect members with incomplete data (missing role_id, grade_level, or unknown role in requirements) into a `generation_errors` list returned in the response in `backend/lib/services/plan_generator.py` per research.md decision 4
 - [ ] T036 Implement plan generation Lambda: invoke plan_generator service, write all plans to TrainingPlans table, return generation summary in `backend/functions/plans/generate_handler.py`
 - [ ] T037 [P] Implement plan list Lambda: scan TrainingPlans table with optional `role_id` and `days_warning` filters in `backend/functions/plans/list_handler.py`
 - [ ] T038 [P] Implement plan get Lambda: fetch single plan by person_id, return 404 if not found in `backend/functions/plans/get_handler.py`
@@ -170,9 +171,59 @@ only Alice Smith appears; click Export and confirm CSV opens in a spreadsheet wi
 - [ ] T051 Add structured error logging (aws-lambda-powertools Logger) to all 9 Lambda handlers
 - [ ] T052 [P] Add loading states, empty states, and error banners to all 5 frontend pages
 - [ ] T053 [P] Add React Router navigation and top-nav menu in `frontend/src/App.jsx` (routes: /team, /certifications, /requirements, /generate, /plans)
-- [ ] T054 [P] Configure GitHub Actions CI pipeline: lint (ruff) → pytest → npm test → cdk synth in `.github/workflows/ci.yml`
+- [ ] T054 [P] Configure GitHub Actions CI pipeline: lint (ruff) → pytest --cov with 80% minimum threshold → npm test → cdk synth; fail build if coverage drops below 80% for `backend/lib/` in `.github/workflows/ci.yml`
 - [ ] T055 Run full quickstart.md end-to-end validation and fix any failures
 - [ ] T056 [P] Update `specs/001-team-training-plans/checklists/requirements.md` to mark all items complete
+
+---
+
+## Phase 8: Test Suite (Constitution §II Compliance)
+
+**Purpose**: Unit and integration tests required by constitution. Write tests as each
+corresponding implementation task completes — do not defer to end.
+
+### Foundational / Shared
+
+- [ ] T057 [P] Write unit tests for CSV parser (valid CSV, missing columns, malformed rows) in `backend/tests/unit/test_csv_parser.py`
+- [ ] T058 [P] Write unit tests for all Pydantic models (valid data, validation failures, edge values) in `backend/tests/unit/test_models.py`
+
+### User Story 1 Tests
+
+- [ ] T059 [US1] Write integration tests for team member import Lambda: valid CSV, missing fields, duplicate person_id, updated records using moto DynamoDB in `backend/tests/integration/test_team_members_import.py`
+- [ ] T060 [P] [US1] Write integration tests for certification import Lambda: valid CSV, retired cert warnings, duplicate cert_id using moto in `backend/tests/integration/test_certifications_import.py`
+- [ ] T061 [P] [US1] Write Jest component tests for FileUpload and ImportSummary components in `frontend/tests/components/FileUpload.test.jsx` and `frontend/tests/components/ImportSummary.test.jsx`
+
+### User Story 2 Tests
+
+- [ ] T062 [US2] Write integration tests for requirements save Lambda: valid matrix, unknown cert_id rejected, retired cert warned, full replace behaviour using moto in `backend/tests/integration/test_requirements.py`
+
+### User Story 3 Tests
+
+- [ ] T063 [US3] Write unit tests for plan_generator service covering: member already certified (requirement_met), member with gap, days_warning trigger, incomplete member detection, retired cert exclusion, grade band nearest-lower matching in `backend/tests/unit/test_plan_generator.py`
+- [ ] T064 [P] [US3] Write integration tests for plan generation Lambda: end-to-end with seeded moto data matching the 6-person sample team in `backend/tests/integration/test_plans_generate.py`
+- [ ] T065 [P] [US3] Write Jest component tests for MemberPlanDetail and DaysWarningBadge in `frontend/tests/components/MemberPlanDetail.test.jsx`
+
+### User Story 4 Tests
+
+- [ ] T066 [US4] Write integration tests for plan export Lambda: CSV output contains all members, correct columns, correct Content-Disposition header using moto in `backend/tests/integration/test_plans_export.py`
+
+---
+
+## Phase 9: FR-010 Stale Plans & SC-004 Quick Lookup
+
+**Purpose**: Address two gaps found during analysis — stale plan detection (FR-010) and
+member quick-lookup (SC-004).
+
+### FR-010: Stale Plans Indicator (H1)
+
+- [ ] T067 Add a `plans_stale` flag to a DynamoDB metadata item (key: `META#plans`) that is set to `true` after any successful team member import, certification import, or requirements save in `backend/lib/utils/metadata.py`; update T018, T020, T029 handlers to call this after writing data
+- [ ] T068 [P] Build StalePlansBanner component: reads `plans_stale` status from `GET /meta/plans-status` endpoint; displays an amber banner "Plans are outdated — click Regenerate" with a direct link to PlanGenerationPage in `frontend/src/components/StalePlansBanner.jsx`
+- [ ] T069 [P] Add `GET /meta/plans-status` Lambda and API Gateway endpoint returning `{ "plans_stale": true/false }` in `backend/functions/meta/status_handler.py` and `infrastructure/cdk/stacks/api_stack.py`
+- [ ] T070 Add StalePlansBanner to PlansDashboardPage and PlanGenerationPage; clear `plans_stale` flag after successful `POST /plans/generate` in `frontend/src/pages/PlansDashboardPage.jsx` and `backend/functions/plans/generate_handler.py`
+
+### SC-004: Member Quick Lookup (M2)
+
+- [ ] T071 [P] Add member name search input to PlansDashboardPage that filters the TeamPlansList client-side by name (no additional API call needed — plans already loaded); search clears when role filter changes in `frontend/src/pages/PlansDashboardPage.jsx`
 
 ---
 
@@ -187,6 +238,8 @@ only Alice Smith appears; click Export and confirm CSV opens in a spreadsheet wi
 - **US3 (Phase 5)**: Depends on Foundational — requires US1 and US2 data to be populated before testing
 - **US4 (Phase 6)**: Depends on US3 (plans must exist to view/export)
 - **Polish (Phase 7)**: Depends on all user stories complete
+- **Test Suite (Phase 8)**: Tasks written alongside corresponding story phase; T063/T064 require T035 complete
+- **FR-010 / SC-004 (Phase 9)**: T067–T070 depend on T018/T020/T029; T071 depends on T049
 
 ### User Story Dependencies
 
