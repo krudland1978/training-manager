@@ -34,10 +34,10 @@ and testing of each story.
 
 **Purpose**: Project initialisation and directory structure.
 
-- [ ] T001 Create project directory structure: `backend/functions/`, `backend/lib/`, `backend/tests/`, `frontend/src/`, `infrastructure/cdk/` per plan.md
-- [ ] T002 Initialise Python backend project: `backend/requirements.txt` (boto3, pydantic, aws-lambda-powertools) and `backend/requirements-dev.txt` (pytest, moto, ruff)
-- [ ] T003 [P] Initialise React frontend project with Vite in `frontend/` (`npm create vite@latest frontend -- --template react`)
-- [ ] T004 [P] Initialise AWS CDK project in `infrastructure/cdk/app.py` with Python runtime; add `infrastructure/requirements.txt` (aws-cdk-lib, constructs)
+- [X] T001 Create project directory structure: `backend/functions/`, `backend/lib/`, `backend/tests/`, `frontend/src/`, `infrastructure/cdk/` per plan.md
+- [X] T002 Initialise Python backend project: `backend/requirements.txt` (boto3, pydantic, aws-lambda-powertools) and `backend/requirements-dev.txt` (pytest, moto, ruff)
+- [X] T003 [P] Initialise React frontend project with Vite in `frontend/` (`npm create vite@latest frontend -- --template react`)
+- [X] T004 [P] Initialise AWS CDK project in `infrastructure/cdk/app.py` with Python runtime; add `infrastructure/requirements.txt` (aws-cdk-lib, constructs)
 
 ---
 
@@ -47,18 +47,18 @@ and testing of each story.
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete.
 
-- [ ] T005 Define DynamoDB stacks for all four tables (TeamMembers, Certifications, RequirementRules, TrainingPlans) with GSI definitions in `infrastructure/cdk/stacks/database_stack.py` per data-model.md
-- [ ] T006 [P] Define Cognito User Pool and API Gateway REST API with Cognito authoriser in `infrastructure/cdk/stacks/auth_stack.py` and `infrastructure/cdk/stacks/api_stack.py`
-- [ ] T007 [P] Define S3 bucket and CloudFront distribution for frontend SPA in `infrastructure/cdk/stacks/frontend_stack.py`
-- [ ] T008 Create shared DynamoDB helper utilities (get_item, put_item, scan, batch_write) in `backend/lib/utils/dynamodb.py`
-- [ ] T009 [P] Create CSV parsing utility with header validation and row-level error collection in `backend/lib/utils/csv_parser.py`
-- [ ] T010 [P] Create Lambda response formatter (success, error, CSV attachment) in `backend/lib/utils/response.py`
-- [ ] T011 [P] Create Pydantic model for TeamMember with field validation in `backend/lib/models/team_member.py` per data-model.md
-- [ ] T012 [P] Create Pydantic model for Certification with level_order enum in `backend/lib/models/certification.py` per data-model.md
-- [ ] T013 [P] Create Pydantic model for RequirementRule with grade band validation in `backend/lib/models/requirement_rule.py` per data-model.md
-- [ ] T014 [P] Create Pydantic model for TrainingPlan and OutstandingCert in `backend/lib/models/training_plan.py` per data-model.md
-- [ ] T015 Create frontend API client with Cognito JWT injection in `frontend/src/services/api.js`
-- [ ] T016 [P] Create frontend Cognito auth service (login, logout, token management) in `frontend/src/services/auth.js`
+- [X] T005 Define DynamoDB stacks for all four tables (TeamMembers, Certifications, RequirementRules, TrainingPlans) with GSI definitions in `infrastructure/cdk/stacks/database_stack.py` per data-model.md
+- [X] T006 [P] Define Cognito User Pool and API Gateway REST API with Cognito authoriser in `infrastructure/cdk/stacks/auth_stack.py` and `infrastructure/cdk/stacks/api_stack.py`
+- [X] T007 [P] Define S3 bucket and CloudFront distribution for frontend SPA in `infrastructure/cdk/stacks/frontend_stack.py`
+- [X] T008 Create shared DynamoDB helper utilities (get_item, put_item, scan, batch_write) in `backend/lib/utils/dynamodb.py`
+- [X] T009 [P] Create CSV parsing utility with header validation and row-level error collection in `backend/lib/utils/csv_parser.py`
+- [X] T010 [P] Create Lambda response formatter (success, error, CSV attachment) in `backend/lib/utils/response.py`
+- [X] T011 [P] Create Pydantic model for TeamMember with field validation in `backend/lib/models/team_member.py` per data-model.md
+- [X] T012 [P] Create Pydantic model for Certification with level_order enum in `backend/lib/models/certification.py` per data-model.md
+- [X] T013 [P] Create Pydantic model for RequirementRule with grade band validation in `backend/lib/models/requirement_rule.py` per data-model.md
+- [X] T014 [P] Create Pydantic model for TrainingPlan and OutstandingCert in `backend/lib/models/training_plan.py` per data-model.md
+- [X] T015 Create frontend API client with Cognito JWT injection in `frontend/src/services/api.js`
+- [X] T016 [P] Create frontend Cognito auth service (login, logout, token management) in `frontend/src/services/auth.js`
 - [ ] T017 Deploy foundational CDK stacks and confirm outputs: `cdk deploy DatabaseStack AuthStack FrontendStack`
 
 **Checkpoint**: Foundation ready — all user story phases can now begin.
@@ -76,16 +76,16 @@ correct handling of retired cert warnings.
 
 ### Implementation for User Story 1
 
-- [ ] T018 Implement team member import Lambda: parse multipart CSV, validate rows, write to DynamoDB TeamMembers table, return import summary in `backend/functions/team_members/import_handler.py`
-- [ ] T019 [P] Implement team member list Lambda: scan TeamMembers table with optional `active` and `role_id` query filters in `backend/functions/team_members/list_handler.py`
-- [ ] T020 Implement certification import Lambda: parse multipart CSV, validate rows, set `level_order`, flag retired certs as warnings (not errors), write to Certifications table in `backend/functions/certifications/import_handler.py`
-- [ ] T021 [P] Implement certification list Lambda: scan Certifications table with optional `retired` and `domain` query filters in `backend/functions/certifications/list_handler.py`
-- [ ] T022 Register `POST /team-members/import` and `GET /team-members` endpoints in `infrastructure/cdk/stacks/api_stack.py` (Lambda integrations with Cognito authoriser)
-- [ ] T023 [P] Register `POST /certifications/import` and `GET /certifications` endpoints in `infrastructure/cdk/stacks/api_stack.py`
-- [ ] T024 [P] Build shared FileUpload component (drag-and-drop CSV, file validation, upload state) in `frontend/src/components/FileUpload.jsx`
-- [ ] T025 [P] Build shared ImportSummary component (accepted/skipped/warnings table) in `frontend/src/components/ImportSummary.jsx`
-- [ ] T026 Build TeamUploadPage: FileUpload + ImportSummary + team member list preview in `frontend/src/pages/TeamUploadPage.jsx`
-- [ ] T027 [P] Build CertificationUploadPage: FileUpload + ImportSummary + cert list preview in `frontend/src/pages/CertificationUploadPage.jsx`
+- [X] T018 Implement team member import Lambda: parse multipart CSV, validate rows, write to DynamoDB TeamMembers table, return import summary in `backend/functions/team_members/import_handler.py`
+- [X] T019 [P] Implement team member list Lambda: scan TeamMembers table with optional `active` and `role_id` query filters in `backend/functions/team_members/list_handler.py`
+- [X] T020 Implement certification import Lambda: parse multipart CSV, validate rows, set `level_order`, flag retired certs as warnings (not errors), write to Certifications table in `backend/functions/certifications/import_handler.py`
+- [X] T021 [P] Implement certification list Lambda: scan Certifications table with optional `retired` and `domain` query filters in `backend/functions/certifications/list_handler.py`
+- [X] T022 Register `POST /team-members/import` and `GET /team-members` endpoints in `infrastructure/cdk/stacks/api_stack.py` (Lambda integrations with Cognito authoriser)
+- [X] T023 [P] Register `POST /certifications/import` and `GET /certifications` endpoints in `infrastructure/cdk/stacks/api_stack.py`
+- [X] T024 [P] Build shared FileUpload component (drag-and-drop CSV, file validation, upload state) in `frontend/src/components/FileUpload.jsx`
+- [X] T025 [P] Build shared ImportSummary component (accepted/skipped/warnings table) in `frontend/src/components/ImportSummary.jsx`
+- [X] T026 Build TeamUploadPage: FileUpload + ImportSummary + team member list preview in `frontend/src/pages/TeamUploadPage.jsx`
+- [X] T027 [P] Build CertificationUploadPage: FileUpload + ImportSummary + cert list preview in `frontend/src/pages/CertificationUploadPage.jsx`
 - [ ] T028 Deploy US1 Lambda functions and test end-to-end via quickstart.md steps 3–4
 
 **Checkpoint**: User Story 1 fully functional — team members and certifications can be
@@ -103,11 +103,11 @@ they match exactly.
 
 ### Implementation for User Story 2
 
-- [ ] T029 Implement requirements save Lambda: validate all `required_cert_ids` exist in Certifications table, warn on retired certs, replace full matrix, return save summary in `backend/functions/requirements/save_handler.py`
-- [ ] T030 [P] Implement requirements get Lambda: scan RequirementRules table and return all rules sorted by role_id then grade_min in `backend/functions/requirements/get_handler.py`
-- [ ] T031 Register `POST /requirements` and `GET /requirements` endpoints in `infrastructure/cdk/stacks/api_stack.py`
-- [ ] T032 Build RequirementsTable component: editable grid of role/grade band rows with cert picker in `frontend/src/components/RequirementsTable.jsx`
-- [ ] T033 Build RequirementsPage: load existing matrix, render RequirementsTable, save on submit in `frontend/src/pages/RequirementsPage.jsx`
+- [X] T029 Implement requirements save Lambda: validate all `required_cert_ids` exist in Certifications table, warn on retired certs, replace full matrix, return save summary in `backend/functions/requirements/save_handler.py`
+- [X] T030 [P] Implement requirements get Lambda: scan RequirementRules table and return all rules sorted by role_id then grade_min in `backend/functions/requirements/get_handler.py`
+- [X] T031 Register `POST /requirements` and `GET /requirements` endpoints in `infrastructure/cdk/stacks/api_stack.py`
+- [X] T032 Build RequirementsTable component: editable grid of role/grade band rows with cert picker in `frontend/src/components/RequirementsTable.jsx`
+- [X] T033 Build RequirementsPage: load existing matrix, render RequirementsTable, save on submit in `frontend/src/pages/RequirementsPage.jsx`
 - [ ] T034 Deploy US2 Lambda functions and test end-to-end via API contract in `specs/001-team-training-plans/contracts/api.md`
 
 **Checkpoint**: User Story 2 fully functional — requirements matrix can be saved and
@@ -127,15 +127,15 @@ plan targets aws-dop + aws-scs.
 
 ### Implementation for User Story 3
 
-- [ ] T035 Implement plan generation service (gap analysis algorithm): load members, certs, rules; compute outstanding certs per member; calculate study days; set days_warning; order by level_order; detect and collect members with incomplete data (missing role_id, grade_level, or unknown role in requirements) into a `generation_errors` list returned in the response in `backend/lib/services/plan_generator.py` per research.md decision 4
-- [ ] T036 Implement plan generation Lambda: invoke plan_generator service, write all plans to TrainingPlans table, return generation summary in `backend/functions/plans/generate_handler.py`
-- [ ] T037 [P] Implement plan list Lambda: scan TrainingPlans table with optional `role_id` and `days_warning` filters in `backend/functions/plans/list_handler.py`
-- [ ] T038 [P] Implement plan get Lambda: fetch single plan by person_id, return 404 if not found in `backend/functions/plans/get_handler.py`
-- [ ] T039 Register `POST /plans/generate`, `GET /plans`, and `GET /plans/{person_id}` endpoints in `infrastructure/cdk/stacks/api_stack.py`
-- [ ] T040 [P] Build DaysWarningBadge component: amber warning indicator with days shortfall message in `frontend/src/components/DaysWarningBadge.jsx`
-- [ ] T041 [P] Build MemberPlanDetail component: required certs, certs held, outstanding cert list with study days, days warning in `frontend/src/components/MemberPlanDetail.jsx`
-- [ ] T042 [P] Build TeamPlansList component: table of all members with plan status, outstanding count, days warning indicator in `frontend/src/components/TeamPlansList.jsx`
-- [ ] T043 Build PlanGenerationPage: generate button, generation summary, link to plans dashboard in `frontend/src/pages/PlanGenerationPage.jsx`
+- [X] T035 Implement plan generation service (gap analysis algorithm): load members, certs, rules; compute outstanding certs per member; calculate study days; set days_warning; order by level_order; detect and collect members with incomplete data (missing role_id, grade_level, or unknown role in requirements) into a `generation_errors` list returned in the response in `backend/lib/services/plan_generator.py` per research.md decision 4
+- [X] T036 Implement plan generation Lambda: invoke plan_generator service, write all plans to TrainingPlans table, return generation summary in `backend/functions/plans/generate_handler.py`
+- [X] T037 [P] Implement plan list Lambda: scan TrainingPlans table with optional `role_id` and `days_warning` filters in `backend/functions/plans/list_handler.py`
+- [X] T038 [P] Implement plan get Lambda: fetch single plan by person_id, return 404 if not found in `backend/functions/plans/get_handler.py`
+- [X] T039 Register `POST /plans/generate`, `GET /plans`, and `GET /plans/{person_id}` endpoints in `infrastructure/cdk/stacks/api_stack.py`
+- [X] T040 [P] Build DaysWarningBadge component: amber warning indicator with days shortfall message in `frontend/src/components/DaysWarningBadge.jsx`
+- [X] T041 [P] Build MemberPlanDetail component: required certs, certs held, outstanding cert list with study days, days warning in `frontend/src/components/MemberPlanDetail.jsx`
+- [X] T042 [P] Build TeamPlansList component: table of all members with plan status, outstanding count, days warning indicator in `frontend/src/components/TeamPlansList.jsx`
+- [X] T043 Build PlanGenerationPage: generate button, generation summary, link to plans dashboard in `frontend/src/pages/PlanGenerationPage.jsx`
 - [ ] T044 Deploy US3 Lambda functions and test end-to-end via quickstart.md steps 6–8
 
 **Checkpoint**: User Story 3 fully functional — training plans generated, visible per
@@ -153,11 +153,11 @@ only Alice Smith appears; click Export and confirm CSV opens in a spreadsheet wi
 
 ### Implementation for User Story 4
 
-- [ ] T045 Implement plan export Lambda: scan TrainingPlans table, format as CSV (columns per contracts/api.md), return with `Content-Disposition: attachment` in `backend/functions/plans/export_handler.py`
-- [ ] T046 Register `GET /plans/export` endpoint in `infrastructure/cdk/stacks/api_stack.py`
-- [ ] T047 [P] Build PlanFilter component: dropdowns for role_id and days_warning filter, triggers parent re-fetch in `frontend/src/components/PlanFilter.jsx`
-- [ ] T048 [P] Build ExportButton component: calls GET /plans/export, triggers browser file download in `frontend/src/components/ExportButton.jsx`
-- [ ] T049 Build PlansDashboardPage: PlanFilter + TeamPlansList + ExportButton; clicking a row opens MemberPlanDetail in `frontend/src/pages/PlansDashboardPage.jsx`
+- [X] T045 Implement plan export Lambda: scan TrainingPlans table, format as CSV (columns per contracts/api.md), return with `Content-Disposition: attachment` in `backend/functions/plans/export_handler.py`
+- [X] T046 Register `GET /plans/export` endpoint in `infrastructure/cdk/stacks/api_stack.py`
+- [X] T047 [P] Build PlanFilter component: dropdowns for role_id and days_warning filter, triggers parent re-fetch in `frontend/src/components/PlanFilter.jsx`
+- [X] T048 [P] Build ExportButton component: calls GET /plans/export, triggers browser file download in `frontend/src/components/ExportButton.jsx`
+- [X] T049 Build PlansDashboardPage: PlanFilter + TeamPlansList + ExportButton; clicking a row opens MemberPlanDetail in `frontend/src/pages/PlansDashboardPage.jsx`
 - [ ] T050 Deploy US4 Lambda and test end-to-end via quickstart.md step 9
 
 **Checkpoint**: All user stories independently functional and testable.
@@ -168,10 +168,10 @@ only Alice Smith appears; click Export and confirm CSV opens in a spreadsheet wi
 
 **Purpose**: Improvements that apply across all user stories.
 
-- [ ] T051 Add structured error logging (aws-lambda-powertools Logger) to all 9 Lambda handlers
-- [ ] T052 [P] Add loading states, empty states, and error banners to all 5 frontend pages
-- [ ] T053 [P] Add React Router navigation and top-nav menu in `frontend/src/App.jsx` (routes: /team, /certifications, /requirements, /generate, /plans)
-- [ ] T054 [P] Configure GitHub Actions CI pipeline: lint (ruff) → pytest --cov with 80% minimum threshold → npm test → cdk synth; fail build if coverage drops below 80% for `backend/lib/` in `.github/workflows/ci.yml`
+- [X] T051 Add structured error logging (aws-lambda-powertools Logger) to all 9 Lambda handlers
+- [X] T052 [P] Add loading states, empty states, and error banners to all 5 frontend pages
+- [X] T053 [P] Add React Router navigation and top-nav menu in `frontend/src/App.jsx` (routes: /team, /certifications, /requirements, /generate, /plans)
+- [X] T054 [P] Configure GitHub Actions CI pipeline: lint (ruff) → pytest --cov with 80% minimum threshold → npm test → cdk synth; fail build if coverage drops below 80% for `backend/lib/` in `.github/workflows/ci.yml`
 - [ ] T055 Run full quickstart.md end-to-end validation and fix any failures
 - [ ] T056 [P] Update `specs/001-team-training-plans/checklists/requirements.md` to mark all items complete
 
@@ -184,28 +184,28 @@ corresponding implementation task completes — do not defer to end.
 
 ### Foundational / Shared
 
-- [ ] T057 [P] Write unit tests for CSV parser (valid CSV, missing columns, malformed rows) in `backend/tests/unit/test_csv_parser.py`
-- [ ] T058 [P] Write unit tests for all Pydantic models (valid data, validation failures, edge values) in `backend/tests/unit/test_models.py`
+- [X] T057 [P] Write unit tests for CSV parser (valid CSV, missing columns, malformed rows) in `backend/tests/unit/test_csv_parser.py`
+- [X] T058 [P] Write unit tests for all Pydantic models (valid data, validation failures, edge values) in `backend/tests/unit/test_models.py`
 
 ### User Story 1 Tests
 
-- [ ] T059 [US1] Write integration tests for team member import Lambda: valid CSV, missing fields, duplicate person_id, updated records using moto DynamoDB in `backend/tests/integration/test_team_members_import.py`
-- [ ] T060 [P] [US1] Write integration tests for certification import Lambda: valid CSV, retired cert warnings, duplicate cert_id using moto in `backend/tests/integration/test_certifications_import.py`
-- [ ] T061 [P] [US1] Write Jest component tests for FileUpload and ImportSummary components in `frontend/tests/components/FileUpload.test.jsx` and `frontend/tests/components/ImportSummary.test.jsx`
+- [X] T059 [US1] Write integration tests for team member import Lambda: valid CSV, missing fields, duplicate person_id, updated records using moto DynamoDB in `backend/tests/integration/test_team_members_import.py`
+- [X] T060 [P] [US1] Write integration tests for certification import Lambda: valid CSV, retired cert warnings, duplicate cert_id using moto in `backend/tests/integration/test_certifications_import.py`
+- [X] T061 [P] [US1] Write Jest component tests for FileUpload and ImportSummary components in `frontend/tests/components/FileUpload.test.jsx` and `frontend/tests/components/ImportSummary.test.jsx`
 
 ### User Story 2 Tests
 
-- [ ] T062 [US2] Write integration tests for requirements save Lambda: valid matrix, unknown cert_id rejected, retired cert warned, full replace behaviour using moto in `backend/tests/integration/test_requirements.py`
+- [X] T062 [US2] Write integration tests for requirements save Lambda: valid matrix, unknown cert_id rejected, retired cert warned, full replace behaviour using moto in `backend/tests/integration/test_requirements.py`
 
 ### User Story 3 Tests
 
-- [ ] T063 [US3] Write unit tests for plan_generator service covering: member already certified (requirement_met), member with gap, days_warning trigger, incomplete member detection, retired cert exclusion, grade band nearest-lower matching in `backend/tests/unit/test_plan_generator.py`
-- [ ] T064 [P] [US3] Write integration tests for plan generation Lambda: end-to-end with seeded moto data matching the 6-person sample team in `backend/tests/integration/test_plans_generate.py`
-- [ ] T065 [P] [US3] Write Jest component tests for MemberPlanDetail and DaysWarningBadge in `frontend/tests/components/MemberPlanDetail.test.jsx`
+- [X] T063 [US3] Write unit tests for plan_generator service covering: member already certified (requirement_met), member with gap, days_warning trigger, incomplete member detection, retired cert exclusion, grade band nearest-lower matching in `backend/tests/unit/test_plan_generator.py`
+- [X] T064 [P] [US3] Write integration tests for plan generation Lambda: end-to-end with seeded moto data matching the 6-person sample team in `backend/tests/integration/test_plans_generate.py`
+- [X] T065 [P] [US3] Write Jest component tests for MemberPlanDetail and DaysWarningBadge in `frontend/tests/components/MemberPlanDetail.test.jsx`
 
 ### User Story 4 Tests
 
-- [ ] T066 [US4] Write integration tests for plan export Lambda: CSV output contains all members, correct columns, correct Content-Disposition header using moto in `backend/tests/integration/test_plans_export.py`
+- [X] T066 [US4] Write integration tests for plan export Lambda: CSV output contains all members, correct columns, correct Content-Disposition header using moto in `backend/tests/integration/test_plans_export.py`
 
 ---
 
@@ -216,14 +216,14 @@ member quick-lookup (SC-004).
 
 ### FR-010: Stale Plans Indicator (H1)
 
-- [ ] T067 Add a `plans_stale` flag to a DynamoDB metadata item (key: `META#plans`) that is set to `true` after any successful team member import, certification import, or requirements save in `backend/lib/utils/metadata.py`; update T018, T020, T029 handlers to call this after writing data
-- [ ] T068 [P] Build StalePlansBanner component: reads `plans_stale` status from `GET /meta/plans-status` endpoint; displays an amber banner "Plans are outdated — click Regenerate" with a direct link to PlanGenerationPage in `frontend/src/components/StalePlansBanner.jsx`
-- [ ] T069 [P] Add `GET /meta/plans-status` Lambda and API Gateway endpoint returning `{ "plans_stale": true/false }` in `backend/functions/meta/status_handler.py` and `infrastructure/cdk/stacks/api_stack.py`
-- [ ] T070 Add StalePlansBanner to PlansDashboardPage and PlanGenerationPage; clear `plans_stale` flag after successful `POST /plans/generate` in `frontend/src/pages/PlansDashboardPage.jsx` and `backend/functions/plans/generate_handler.py`
+- [X] T067 Add a `plans_stale` flag to a DynamoDB metadata item (key: `META#plans`) that is set to `true` after any successful team member import, certification import, or requirements save in `backend/lib/utils/metadata.py`; update T018, T020, T029 handlers to call this after writing data
+- [X] T068 [P] Build StalePlansBanner component: reads `plans_stale` status from `GET /meta/plans-status` endpoint; displays an amber banner "Plans are outdated — click Regenerate" with a direct link to PlanGenerationPage in `frontend/src/components/StalePlansBanner.jsx`
+- [X] T069 [P] Add `GET /meta/plans-status` Lambda and API Gateway endpoint returning `{ "plans_stale": true/false }` in `backend/functions/meta/status_handler.py` and `infrastructure/cdk/stacks/api_stack.py`
+- [X] T070 Add StalePlansBanner to PlansDashboardPage and PlanGenerationPage; clear `plans_stale` flag after successful `POST /plans/generate` in `frontend/src/pages/PlansDashboardPage.jsx` and `backend/functions/plans/generate_handler.py`
 
 ### SC-004: Member Quick Lookup (M2)
 
-- [ ] T071 [P] Add member name search input to PlansDashboardPage that filters the TeamPlansList client-side by name (no additional API call needed — plans already loaded); search clears when role filter changes in `frontend/src/pages/PlansDashboardPage.jsx`
+- [X] T071 [P] Add member name search input to PlansDashboardPage that filters the TeamPlansList client-side by name (no additional API call needed — plans already loaded); search clears when role filter changes in `frontend/src/pages/PlansDashboardPage.jsx`
 
 ---
 
