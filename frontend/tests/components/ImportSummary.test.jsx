@@ -20,7 +20,7 @@ describe('ImportSummary', () => {
       warnings: [{ cert_id: 'aws-das', reason: 'Retired cert' }],
     }
     render(<ImportSummary result={result} />)
-    expect(screen.getByText(/1/)).toBeInTheDocument()
+    expect(screen.getAllByText(/1/).length).toBeGreaterThan(0)
     expect(screen.getByText(/Warnings/)).toBeInTheDocument()
   })
 

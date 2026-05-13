@@ -91,7 +91,7 @@ def test_import_writes_to_dynamodb():
     table = ddb.Table(TABLE_NAME)
     item = table.get_item(Key={"person_id": "P001"})["Item"]
     assert item["name"] == "Alice Smith"
-    assert item["grade_level"] == "7"
+    assert int(item["grade_level"]) == 7
 
 
 @mock_aws

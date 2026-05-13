@@ -107,4 +107,4 @@ def test_duplicate_cert_id_is_upserted():
     ddb = boto3.resource("dynamodb", region_name="eu-west-1")
     item = ddb.Table(TABLE_NAME).get_item(Key={"cert_id": "aws-cp"})["Item"]
     assert item["name"] == "AWS Cloud Practitioner Updated"
-    assert item["typical_study_days"] == "4"
+    assert int(item["typical_study_days"]) == 4

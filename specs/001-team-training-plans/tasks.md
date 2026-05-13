@@ -59,7 +59,7 @@ and testing of each story.
 - [X] T014 [P] Create Pydantic model for TrainingPlan and OutstandingCert in `backend/lib/models/training_plan.py` per data-model.md
 - [X] T015 Create frontend API client with Cognito JWT injection in `frontend/src/services/api.js`
 - [X] T016 [P] Create frontend Cognito auth service (login, logout, token management) in `frontend/src/services/auth.js`
-- [ ] T017 Deploy foundational CDK stacks and confirm outputs: `cdk deploy DatabaseStack AuthStack FrontendStack`
+- [X] T017 Deploy foundational CDK stacks and confirm outputs: `cdk deploy DatabaseStack AuthStack FrontendStack`
 
 **Checkpoint**: Foundation ready — all user story phases can now begin.
 
@@ -86,7 +86,7 @@ correct handling of retired cert warnings.
 - [X] T025 [P] Build shared ImportSummary component (accepted/skipped/warnings table) in `frontend/src/components/ImportSummary.jsx`
 - [X] T026 Build TeamUploadPage: FileUpload + ImportSummary + team member list preview in `frontend/src/pages/TeamUploadPage.jsx`
 - [X] T027 [P] Build CertificationUploadPage: FileUpload + ImportSummary + cert list preview in `frontend/src/pages/CertificationUploadPage.jsx`
-- [ ] T028 Deploy US1 Lambda functions and test end-to-end via quickstart.md steps 3–4
+- [X] T028 Deploy US1 Lambda functions and test end-to-end via quickstart.md steps 3–4
 
 **Checkpoint**: User Story 1 fully functional — team members and certifications can be
 imported and listed independently.
@@ -108,7 +108,7 @@ they match exactly.
 - [X] T031 Register `POST /requirements` and `GET /requirements` endpoints in `infrastructure/cdk/stacks/api_stack.py`
 - [X] T032 Build RequirementsTable component: editable grid of role/grade band rows with cert picker in `frontend/src/components/RequirementsTable.jsx`
 - [X] T033 Build RequirementsPage: load existing matrix, render RequirementsTable, save on submit in `frontend/src/pages/RequirementsPage.jsx`
-- [ ] T034 Deploy US2 Lambda functions and test end-to-end via API contract in `specs/001-team-training-plans/contracts/api.md`
+- [X] T034 Deploy US2 Lambda functions and test end-to-end via API contract in `specs/001-team-training-plans/contracts/api.md`
 
 **Checkpoint**: User Story 2 fully functional — requirements matrix can be saved and
 retrieved independently.
@@ -136,7 +136,7 @@ plan targets aws-dop + aws-scs.
 - [X] T041 [P] Build MemberPlanDetail component: required certs, certs held, outstanding cert list with study days, days warning in `frontend/src/components/MemberPlanDetail.jsx`
 - [X] T042 [P] Build TeamPlansList component: table of all members with plan status, outstanding count, days warning indicator in `frontend/src/components/TeamPlansList.jsx`
 - [X] T043 Build PlanGenerationPage: generate button, generation summary, link to plans dashboard in `frontend/src/pages/PlanGenerationPage.jsx`
-- [ ] T044 Deploy US3 Lambda functions and test end-to-end via quickstart.md steps 6–8
+- [X] T044 Deploy US3 Lambda functions and test end-to-end via quickstart.md steps 6–8
 
 **Checkpoint**: User Story 3 fully functional — training plans generated, visible per
 member, days warnings surfaced.
@@ -158,7 +158,7 @@ only Alice Smith appears; click Export and confirm CSV opens in a spreadsheet wi
 - [X] T047 [P] Build PlanFilter component: dropdowns for role_id and days_warning filter, triggers parent re-fetch in `frontend/src/components/PlanFilter.jsx`
 - [X] T048 [P] Build ExportButton component: calls GET /plans/export, triggers browser file download in `frontend/src/components/ExportButton.jsx`
 - [X] T049 Build PlansDashboardPage: PlanFilter + TeamPlansList + ExportButton; clicking a row opens MemberPlanDetail in `frontend/src/pages/PlansDashboardPage.jsx`
-- [ ] T050 Deploy US4 Lambda and test end-to-end via quickstart.md step 9
+- [X] T050 Deploy US4 Lambda and test end-to-end via quickstart.md step 9
 
 **Checkpoint**: All user stories independently functional and testable.
 
@@ -172,8 +172,8 @@ only Alice Smith appears; click Export and confirm CSV opens in a spreadsheet wi
 - [X] T052 [P] Add loading states, empty states, and error banners to all 5 frontend pages
 - [X] T053 [P] Add React Router navigation and top-nav menu in `frontend/src/App.jsx` (routes: /team, /certifications, /requirements, /generate, /plans)
 - [X] T054 [P] Configure GitHub Actions CI pipeline: lint (ruff) → pytest --cov with 80% minimum threshold → npm test → cdk synth; fail build if coverage drops below 80% for `backend/lib/` in `.github/workflows/ci.yml`
-- [ ] T055 Run full quickstart.md end-to-end validation and fix any failures
-- [ ] T056 [P] Update `specs/001-team-training-plans/checklists/requirements.md` to mark all items complete
+- [X] T055 Run full quickstart.md end-to-end validation and fix any failures
+- [X] T056 [P] Update `specs/001-team-training-plans/checklists/requirements.md` to mark all items complete
 
 ---
 

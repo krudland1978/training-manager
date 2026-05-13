@@ -1,0 +1,17 @@
+# pip-installed Lambda dependencies (pip install -r requirements.txt -t .)
+*.dist-info/
+bin/
+annotated_types/
+aws_lambda_powertools/
+boto3/
+botocore/
+dateutil/
+jmespath/
+pydantic/
+pydantic_core/
+python_dateutil*/
+s3transfer/
+six*
+typing_extensions*
+urllib3/
+wrapt/

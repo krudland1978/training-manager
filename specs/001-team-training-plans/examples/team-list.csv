@@ -1,0 +1,7 @@
+person_id,name,email,grade_level,role_id,start_date,grade_start_date,manager_email,location,active,days_allocated_override,days_remaining,certifications_held
+P001,Alice Smith,alice.smith@company.com,7,solution_architect,15/03/2022,01/04/2024,big.manager@company.com,London,TRUE,10,10,aws-cp|aws-saa
+P002,Bob Johnson,bob.johnson@company.com,5,software_dev_engineer,10/01/2024,10/01/2024,big.manager@company.com,London,TRUE,10,10,aws-cp
+P003,Carol Williams,carol.williams@company.com,9,cloud_devops,01/09/2018,01/04/2023,big.manager@company.com,London,TRUE,10,10,aws-cp|aws-soa|aws-dop
+P004,David Brown,david.brown@company.com,3,cloud_engineer,15/09/2025,15/09/2025,big.manager@company.com,Manchester,TRUE,10,5,
+P005,Eve Davis,eve.davis@company.com,10,devsecops,01/06/2017,01/01/2024,big.manager@company.com,Edinburgh,TRUE,10,6,aws-cp|aws-soa|aws-dop
+P006,Frank Miller,frank.miller@company.com,8,application_architect,01/02/2020,01/04/2024,big.manager@company.com,Bristol,TRUE,10,4,aws-cp|aws-saa

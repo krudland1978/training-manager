@@ -18,44 +18,34 @@ class TestCertLevel:
 
 
 class TestCertification:
+    def _base(self, **kwargs):
+        defaults = {
+            "cert_id": "aws-saa",
+            "exam_code": "SAA-C03",
+            "name": "AWS SAA",
+            "provider": "aws",
+            "level": "associate",
+            "level_order": 2,
+            "domain": "Architecture",
+            "typical_study_days": 8,
+            "difficulty_multiplier": 1.5,
+            "validity_years": 3,
+            "retired": False,
+        }
+        defaults.update(kwargs)
+        return Certification(**defaults)
+
     def test_valid_cert(self):
-        c = Certification(
-            cert_id="aws-saa",
-            name="AWS SAA",
-            provider="aws",
-            level="associate",
-            level_order=2,
-            domain="Architecture",
-            typical_study_days=8,
-            difficulty_multiplier=1.5,
-        )
+        c = self._base()
         assert c.effective_study_days == 12.0
 
-    def test_effective_study_days_override(self):
-        c = Certification(
-            cert_id="aws-saa",
-            name="AWS SAA",
-            provider="aws",
-            level="associate",
-            level_order=2,
-            domain="Architecture",
-            typical_study_days=8,
-            difficulty_multiplier=1.5,
-            effective_study_days=10.0,
-        )
-        assert c.effective_study_days == 10.0
+    def test_effective_study_days_stored_in_dynamo(self):
+        c = self._base(typical_study_days=8, difficulty_multiplier=1.5)
+        data = c.to_dynamo()
+        assert data["effective_study_days"] == 12.0
 
     def test_retired_default_false(self):
-        c = Certification(
-            cert_id="aws-saa",
-            name="X",
-            provider="aws",
-            level="associate",
-            level_order=2,
-            domain="Architecture",
-            typical_study_days=5,
-            difficulty_multiplier=1.0,
-        )
+        c = self._base(retired=False)
         assert c.retired is False
 
 
@@ -69,8 +59,11 @@ class TestTeamMember:
             "role_id": "solution_architect",
             "start_date": "2020-01-01",
             "grade_start_date": "2022-01-01",
+            "manager_email": "mgr@co.com",
             "location": "London",
             "active": True,
+            "days_allocated_override": 10,
+            "days_remaining": 10,
         }
         defaults.update(kwargs)
         return TeamMember(**defaults)
