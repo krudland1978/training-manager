@@ -1,16 +1,13 @@
 <!-- sync-impact-report
-Version Change: N/A → 1.0.0 (initial ratification)
-Modified Principles: None (first-time fill)
+Version Change: 1.0.0 → 1.1.0 (MINOR — new Architectural Constraints section added)
+Modified Principles: None
 Added Sections:
-  - Core Principles (I–IV): Code Quality, Testing Standards, UX Consistency, Performance Requirements
-  - Development Workflow
-  - Quality Gates
-  - Governance
+  - Architectural Constraints (platform, backend, frontend, data storage)
 Removed Sections: None
 Templates Requiring Updates:
-  ✅ .specify/templates/plan-template.md — Constitution Check references principles dynamically; no structural change required
-  ✅ .specify/templates/spec-template.md — Success Criteria & Requirements align with performance/UX principles; no structural change required
-  ✅ .specify/templates/tasks-template.md — Testing-first discipline already enforced; no structural change required
+  ✅ .specify/templates/plan-template.md — Technical Context section already captures language/platform; no structural change required
+  ✅ .specify/templates/spec-template.md — Spec remains technology-agnostic by design; no change required
+  ✅ .specify/templates/tasks-template.md — Task path conventions already reflect backend/frontend split; no change required
 Deferred TODOs: None
 -->
 
@@ -67,6 +64,49 @@ explicit performance goals and constraints before implementation begins.
 **Rationale**: Performance is a feature. Users abandon slow applications, and regressions
 compound silently if not gated at the boundary.
 
+## Architectural Constraints
+
+These constraints are non-negotiable. Any deviation MUST be explicitly justified in the
+plan's Complexity Tracking table and approved before implementation begins.
+
+### Platform
+
+The application MUST be deployed on AWS. Cloud-native, managed AWS services MUST be
+preferred over self-managed alternatives at every layer. Introducing a self-managed
+component where an equivalent managed AWS service exists requires explicit justification.
+
+### Backend
+
+All backend logic MUST be implemented as AWS Lambda functions. Python MUST be used as
+the sole backend language. Lambda functions MUST be stateless — no local disk writes or
+in-memory state that persists across invocations. Shared business logic MUST be packaged
+as Lambda Layers or internal Python modules, not duplicated across functions.
+
+**Rationale**: Lambda eliminates server management overhead, scales automatically with
+demand, and aligns with the cloud-native platform constraint.
+
+### Frontend
+
+The user interface MUST be built with React.js. The frontend MUST be a single-page
+application (SPA) served via a managed static hosting service (e.g., S3 + CloudFront).
+No server-side rendering frameworks that require persistent compute MUST be introduced.
+
+**Rationale**: React.js provides a mature component model and ecosystem. Serving a static
+SPA via CloudFront minimises operational overhead and aligns with the managed-services
+principle.
+
+### Data Storage
+
+Persistent data MUST be stored in managed AWS storage services (e.g., DynamoDB, RDS,
+S3). The choice of storage service for each feature MUST be justified in the plan based
+on access patterns, consistency requirements, and cost. No self-hosted databases MUST be
+run on EC2 or ECS unless no managed equivalent exists.
+
+### API Layer
+
+Backend functions MUST be exposed to the frontend via API Gateway. All API endpoints
+MUST require authentication. Direct Lambda invocation from the frontend is not permitted.
+
 ## Development Workflow
 
 All changes MUST be made on feature branches and reviewed via pull request before merge
@@ -101,4 +141,4 @@ Amendment versioning policy:
 All pull requests and code reviews MUST verify compliance with the principles above.
 When in doubt, choose the simpler, more testable, more consistent approach.
 
-**Version**: 1.0.0 | **Ratified**: 2026-05-10 | **Last Amended**: 2026-05-10
+**Version**: 1.1.0 | **Ratified**: 2026-05-10 | **Last Amended**: 2026-05-10
