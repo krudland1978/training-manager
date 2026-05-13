@@ -1,4 +1,7 @@
+import { useState } from 'react'
 import { BrowserRouter, Routes, Route, NavLink } from 'react-router-dom'
+import { isAuthenticated, logout } from './services/auth.js'
+import LoginPage from './pages/LoginPage.jsx'
 import TeamUploadPage from './pages/TeamUploadPage.jsx'
 import CertificationUploadPage from './pages/CertificationUploadPage.jsx'
 import RequirementsPage from './pages/RequirementsPage.jsx'
@@ -7,7 +10,8 @@ import PlansDashboardPage from './pages/PlansDashboardPage.jsx'
 
 const navStyle = {
   display: 'flex',
-  gap: '0',
+  alignItems: 'center',
+  gap: 0,
   background: '#1a1a2e',
   padding: '0 1.5rem',
 }
@@ -23,10 +27,25 @@ const linkStyle = ({ isActive }) => ({
 })
 
 export default function App() {
+  const [authed, setAuthed] = useState(isAuthenticated())
+
+  function handleLogin() {
+    setAuthed(true)
+  }
+
+  function handleLogout() {
+    logout()
+    setAuthed(false)
+  }
+
+  if (!authed) {
+    return <LoginPage onLogin={handleLogin} />
+  }
+
   return (
     <BrowserRouter>
       <nav style={navStyle}>
-        <span style={{ color: '#fff', padding: '0.9rem 1.2rem 0.9rem 0', fontWeight: 700, fontSize: '0.95rem' }}>
+        <span style={{ color: '#fff', padding: '0.9rem 1.2rem 0.9rem 0', fontWeight: 700, fontSize: '0.95rem', marginRight: 'auto' }}>
           Training Manager
         </span>
         <NavLink to="/team" style={linkStyle}>Team</NavLink>
@@ -34,6 +53,21 @@ export default function App() {
         <NavLink to="/requirements" style={linkStyle}>Requirements</NavLink>
         <NavLink to="/generate" style={linkStyle}>Generate</NavLink>
         <NavLink to="/plans" style={linkStyle}>Plans</NavLink>
+        <button
+          onClick={handleLogout}
+          style={{
+            marginLeft: '1rem',
+            padding: '0.4rem 0.9rem',
+            background: 'transparent',
+            color: '#aaa',
+            border: '1px solid #444',
+            borderRadius: 4,
+            cursor: 'pointer',
+            fontSize: '0.85rem',
+          }}
+        >
+          Sign out
+        </button>
       </nav>
 
       <Routes>
